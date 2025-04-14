@@ -1,11 +1,17 @@
+import { TodoItemType } from "../types/todo";
 import { TodoItem } from "./TodoItem";
 import '../styles/todo-list.css';
 
-export const TodoList = () => {
+type TodoListProps = {
+    todoItems: TodoItemType[];
+};
+
+export const TodoList = ({todoItems}: TodoListProps) => {
     return (
         <div className="todo-list">
-            <TodoItem />
-            <TodoItem />
+            {todoItems.map((todoItem) => (
+                <TodoItem key={todoItem.id} todoItem={todoItem} />
+            ))}
         </div>
     );
 };
