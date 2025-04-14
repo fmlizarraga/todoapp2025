@@ -1,0 +1,43 @@
+.todo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #1e1e1e;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.todo-label span {
+    font-size: 1rem;
+    color: #fff;
+}
+
+.todo-item.todo-item-checked .todo-label span {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.todo-button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0.3rem;
+    transition: color 0.3s;
+}
+
+.todo-button:hover {
+    color: #61dafb;
+}
+
+.todo-check,
+.todo-options {
+    margin-left: 0.5rem;
+}

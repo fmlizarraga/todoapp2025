@@ -1,0 +1,39 @@
+.todo-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #1e1e1e;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.todo-label span {
+    font-size: 1rem;
+    color: #fff;
+}
+
+.todo-item.todo-item-checked .todo-label span {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+/* Nueva toolbar para alinear los botones */
+.todo-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Espacio entre los botones */
+}
+
+.todo-button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0.3rem;
+    transition: color 0.3s;
+}
+
+.todo-button:hover {
+    color: #61dafb;
+}
