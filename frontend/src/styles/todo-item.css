@@ -8,6 +8,10 @@
     transition: background-color 0.3s;
 }
 
+.todo-item.todo-item-checked {
+    background-color: #3f444c;
+}
+
 .todo-label span {
     font-size: 1rem;
     color: #fff;
