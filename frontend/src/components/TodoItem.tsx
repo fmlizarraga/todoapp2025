@@ -8,7 +8,7 @@ type TodoItemProps = {
 
 export const TodoItem = ({todoItem}: TodoItemProps) => {
     return (
-        <div className={todoItem.chacked ? 'todo-item todo-item-checked' : 'todo-item'}>
+        <div className={todoItem.checked ? 'todo-item todo-item-checked' : 'todo-item'}>
             <div className="todo-label"><span>{todoItem.label}</span></div>
             <div className="todo-toolbar">
                 <div className="todo-check">
