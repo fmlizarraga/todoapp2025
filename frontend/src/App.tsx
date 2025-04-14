@@ -1,12 +1,21 @@
+import { Footer, Header, TodoList } from './components';
 import './App.css';
 
-function App() {
+const App = () => {
 
   return (
     <>
-      <h1>Hello World</h1>
+      <header>
+        <Header />
+      </header>
+      <main>
+        <TodoList />
+      </main>
+      <footer>
+        <Footer />
+      </footer>
     </>
   );
-}
+};
 
 export default App;
