@@ -22,11 +22,10 @@
     opacity: 0.6;
 }
 
-/* Nueva toolbar para alinear los botones */
 .todo-toolbar {
     display: flex;
     align-items: center;
-    gap: 0.5rem; /* Espacio entre los botones */
+    gap: 0.5rem;
 }
 
 .todo-button {
@@ -40,4 +39,12 @@
 
 .todo-button:hover {
     color: #61dafb;
+}
+
+.todo-toolbar .todo-button-danger{
+    color: #ff5252;
+}
+
+.todo-toolbar .todo-button-danger:hover{
+    color: #ff2d2d;
 }
