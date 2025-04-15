@@ -1,27 +1,31 @@
 import { useState } from 'react';
 import { TodoItemType } from './types/todo';
-import { Footer, Header, TodoList, Modal, NewTodoForm } from './components';
+import { Footer, Header, TodoList, Modal, NewTodoForm, AuthForm } from './components';
 import './App.css';
-
-const TODO_LIST: TodoItemType[] = [
-  {
-    id: 1,
-    label: 'Task 1',
-    checked: false,
-    timestamp: Date.now()
-  },
-  {
-    id: 2,
-    label: 'Task 2',
-    checked: true,
-    timestamp: Date.now()
-  }
-];
 
 const App = () => {
 
-  const [todoList, setTodoList] = useState<TodoItemType[]>(TODO_LIST);
+  const [todoList, setTodoList] = useState<TodoItemType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
+
+  const handleLogin = (email: string, password: string) => {
+    console.log('Login with', email, password);
+    setIsAuthenticated(true);
+  };
+
+  const handleRegister = (name: string, email: string, password: string) => {
+    console.log('Register with', name, email, password);
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setIsRegistering(false);
+    setTodoList([]);
+  };
 
   const handleAddTodo = (label: string) => {
     if (label.trim() === '') return;
@@ -53,10 +57,26 @@ const App = () => {
     setTodoList(updatedList);
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="auth-container">
+        <AuthForm
+          isRegistering={isRegistering}
+          onLogin={handleLogin}
+          onRegister={handleRegister}
+          onToggleForm={() => setIsRegistering(!isRegistering)}
+        />
+      </div>
+    );
+  }
+
   return (
     <>
       <header>
-        <Header onAdd={() => setIsModalOpen(true)}/>
+        <Header 
+          onAdd={() => setIsModalOpen(true)}
+          onLogout={handleLogout}
+        />
       </header>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <NewTodoForm 

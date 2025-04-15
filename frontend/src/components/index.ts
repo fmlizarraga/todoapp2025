@@ -4,3 +4,4 @@ export * from './TodoList';
 export * from './Footer';
 export * from './NewTodoForm';
 export * from './Modal';
+export * from './AuthForm';
