@@ -43,11 +43,15 @@ class TodoService {
         return this.toTodoDTO(todo);
     }
 
-    async updateTodo(id: number, data: UpdateTodoDTO): Promise<TodoResponseDTO> {
+    async updateTodo(id: number, userId: number, data: UpdateTodoDTO): Promise<TodoResponseDTO> {
         const todo = await this.findById(id);
 
         if (!todo) {
             throw new ApiError(404, 'Todo not found');
+        }
+
+        if (todo.user.id !== userId) {
+            throw new ApiError(403, 'You are not authorized to modify this resource');
         }
 
         todo.label = data.label || todo.label;
@@ -57,20 +61,26 @@ class TodoService {
         return this.toTodoDTO(todo);
     }
 
-    async deleteTodo(id: number): Promise<void> {
+    async deleteTodo(id: number, userId: number): Promise<void> {
         const todo = await this.findById(id);
 
         if (!todo) {
             throw new ApiError(404, 'Todo not found');
         }
+        if (todo.user.id !== userId) {
+            throw new ApiError(403, 'You are not authorized to modify this resource');
+        }
 
         await this.todoRepository.remove(todo);
     }
 
-    async getOneTodo(id: number): Promise<TodoResponseDTO> {
+    async getOneTodo(id: number, userId: number): Promise<TodoResponseDTO> {
         return this.findById(id).then((todo) => {
             if (!todo) {
                 throw new ApiError(404, 'Todo not found');
+            }
+            if (todo.user.id !== userId) {
+                throw new ApiError(403, 'You are not authorized to access this resource');
             }
             return this.toTodoDTO(todo);
         });

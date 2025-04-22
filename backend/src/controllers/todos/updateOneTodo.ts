@@ -6,18 +6,21 @@ import { ApiError } from '../../errors/ApiError';
 
 export const updateOneTodo = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
+    const userId = req.userId!;
     const parsed = updateTodoSchema.safeParse(req.body);
     
     if (!parsed.success) {
-        const error = new ApiError(400, 'Validation error', parsed.error.format());
-        next(error);
-        return;
+        return next(new ApiError(400, 'Invalid parameters', parsed.error.format()));
     }
 
     const { label, checked }: UpdateTodoDTO = parsed.data;
 
     try {
-        const updatedTodo: TodoResponseDTO = await TodoService.updateTodo(Number(id), { label, checked });
+        const updatedTodo: TodoResponseDTO = await TodoService.updateTodo(
+            Number(id),
+            userId,
+            { label, checked }
+        );
         res.status(200).json(updatedTodo);
     } catch (error) {
         next(error);
