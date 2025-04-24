@@ -10,7 +10,7 @@ export interface RegisterDTO {
 };
 
 export interface UserResponseDTO {
-    id: number;
+    id: string;
     username: string;
     email: string;
 };

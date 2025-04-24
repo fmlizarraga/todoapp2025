@@ -7,9 +7,9 @@ import UserService from "./UserService";
 class TodoService {
     private todoRepository = AppDataSource.getRepository(Todo);
 
-    async createTodo(userId: number, label: string): Promise<Todo> {
+    async createTodo(userId: string, label: string): Promise<Todo> {
         const todo = new Todo();
-        const user = await UserService.findById(userId);
+        const user = await UserService.findByUuid(userId);
 
         if (!user) {
             throw new ApiError(404, 'User not found');
@@ -20,37 +20,41 @@ class TodoService {
         return await this.todoRepository.save(todo);
     }
 
-    findByUserId(userId: number): Promise<Todo[]> {
-        return this.todoRepository.find({ where: { user: { id: userId } } });
+    findByUserId(userId: string): Promise<Todo[]> {
+        return this.todoRepository.find({ where: { user: { uuid: userId } } });
     }
 
     findById(id: number): Promise<Todo | null> {
         return this.todoRepository.findOneBy({ id });
     }
 
+    findByUuid(uuid: string): Promise<Todo | null> {
+        return this.todoRepository.findOneBy({ uuid });
+    }
+
     private toTodoDTO(todo: Todo): TodoResponseDTO {
         return {
-            id: todo.id,
+            id: todo.uuid,
             label: todo.label,
             checked: todo.checked,
-            timestamp: new Date(todo.timestamp).getTime(),
+            timestamp: todo.timestamp.getTime(),
         };
     }
 
-    async addTodo(data: CreateTodoDTO, userId: number): Promise<TodoResponseDTO> {
+    async addTodo(data: CreateTodoDTO, userId: string): Promise<TodoResponseDTO> {
         const todo = await this.createTodo(userId, data.label);
 
         return this.toTodoDTO(todo);
     }
 
-    async updateTodo(id: number, userId: number, data: UpdateTodoDTO): Promise<TodoResponseDTO> {
-        const todo = await this.findById(id);
+    async updateTodo(id: string, userId: string, data: UpdateTodoDTO): Promise<TodoResponseDTO> {
+        const todo = await this.findByUuid(id);
 
         if (!todo) {
             throw new ApiError(404, 'Todo not found');
         }
 
-        if (todo.user.id !== userId) {
+        if (todo.user.uuid !== userId) {
             throw new ApiError(403, 'You are not authorized to modify this resource');
         }
 
@@ -61,34 +65,34 @@ class TodoService {
         return this.toTodoDTO(todo);
     }
 
-    async deleteTodo(id: number, userId: number): Promise<void> {
-        const todo = await this.findById(id);
+    async deleteTodo(id: string, userId: string): Promise<void> {
+        const todo = await this.findByUuid(id);
 
         if (!todo) {
             throw new ApiError(404, 'Todo not found');
         }
-        if (todo.user.id !== userId) {
+        if (todo.user.uuid !== userId) {
             throw new ApiError(403, 'You are not authorized to modify this resource');
         }
 
         await this.todoRepository.remove(todo);
     }
 
-    async getOneTodo(id: number, userId: number): Promise<TodoResponseDTO> {
-        return this.findById(id).then((todo) => {
+    async getOneTodo(id: string, userId: string): Promise<TodoResponseDTO> {
+        return this.findByUuid(id).then((todo) => {
             if (!todo) {
                 throw new ApiError(404, 'Todo not found');
             }
-            if (todo.user.id !== userId) {
+            if (todo.user.uuid !== userId) {
                 throw new ApiError(403, 'You are not authorized to access this resource');
             }
             return this.toTodoDTO(todo);
         });
     }
 
-    async findPaginatedByUserId(userId: number, limit: number, offset: number): Promise<TodoListResponseDTO> {
+    async findPaginatedByUserId(userId: string, limit: number, offset: number): Promise<TodoListResponseDTO> {
         const [todos, total] = await this.todoRepository.findAndCount({
-            where: { user: { id: userId } },
+            where: { user: { uuid: userId } },
             take: limit,
             skip: offset,
             order: { timestamp: 'DESC' },

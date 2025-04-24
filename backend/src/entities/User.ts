@@ -1,10 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Generated } from 'typeorm';
 import { Todo } from './Todo';
 
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
     id!: number;
+
+    @Column()
+    @Generated('uuid')
+    uuid!: string;
 
     @Column({ unique: true })
     email!: string;

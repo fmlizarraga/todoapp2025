@@ -12,7 +12,7 @@ export const deleteOneTodo = (req: Request, res: Response, next: NextFunction) =
     }
 
     try {
-        TodoService.deleteTodo(Number(parsed.data.id), userId);
+        TodoService.deleteTodo(parsed.data.id, userId);
         res.status(204).json();
     } catch (error) {
         next(error);

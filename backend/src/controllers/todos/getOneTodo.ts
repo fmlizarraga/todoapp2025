@@ -14,7 +14,7 @@ export const getOneTodo = async (req: Request, res: Response, next: NextFunction
 
     try {
         const todo: TodoResponseDTO = await TodoService.getOneTodo(
-            Number(parsed.data.id), userId
+            parsed.data.id, userId
         );
         res.status(200).json(todo);
     } catch (error) {

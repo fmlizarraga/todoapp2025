@@ -3,7 +3,7 @@ import { ApiError } from '../errors/ApiError';
 import { verifyToken } from '../utils/jwt';
 
 interface JwtPayload {
-  userId: number;
+  userId: string;
 }
 
 export const isAuth = (req: Request, res: Response, next: NextFunction) => {

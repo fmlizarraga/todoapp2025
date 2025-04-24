@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import { 
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    ManyToOne,
+    CreateDateColumn,
+    Generated
+} from 'typeorm';
 import { User } from './User';
 
 @Entity()
@@ -7,13 +14,17 @@ export class Todo {
     id!: number;
 
     @Column()
+    @Generated('uuid')
+    uuid!: string;
+
+    @Column()
     label!: string;
 
     @Column({ default: false })
     checked!: boolean;
 
-    @CreateDateColumn({ type: 'datetime' })
-    timestamp!: number;
+    @CreateDateColumn({ type: 'timestamp with time zone' })
+    timestamp!: Date;
 
     @ManyToOne(() => User, user => user.todos, { onDelete: 'CASCADE' })
     user!: User;

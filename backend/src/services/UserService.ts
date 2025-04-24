@@ -25,8 +25,20 @@ class UserService {
     return await this.userRepository.findOneBy({ id });
   }
 
-  async isValidUserId(id: number): Promise<boolean> {
-    const user = await this.findById(id);
+  async findByUuid(uuid: string): Promise<User | null> {
+    return await this.userRepository.findOneBy({ uuid });
+  }
+
+  private toUserDTO(user: User): UserResponseDTO {
+    return {
+      id: user.uuid,
+      email: user.email,
+      username: user.username,
+    };
+  }
+
+  async isValidUserId(id: string): Promise<boolean> {
+    const user = await this.findByUuid(id);
 
     return !!user;
   }
@@ -42,11 +54,7 @@ class UserService {
 
     const user = await this.createUser(data.email, data.username, hashedPassword);
 
-    return {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-    };
+    return this.toUserDTO(user);
   }
 
   async loginUser(data: LoginDTO): Promise<UserResponseDTO> {
@@ -62,25 +70,17 @@ class UserService {
       throw new ApiError(401, 'Invalid credentials');
     }
 
-    return {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-    }
+    return this.toUserDTO(user);
   };
 
-  async getUserData(id: number): Promise<UserResponseDTO> {
-    const user = await this.findById(id);
+  async getUserData(id: string): Promise<UserResponseDTO> {
+    const user = await this.findByUuid(id);
 
     if (!user) {
       throw new ApiError(404, 'User not found');
     }
 
-    return {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-    };
+    return this.toUserDTO(user);
   }
 }
 

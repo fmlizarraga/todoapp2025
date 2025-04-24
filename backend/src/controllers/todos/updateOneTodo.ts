@@ -17,7 +17,7 @@ export const updateOneTodo = async (req: Request, res: Response, next: NextFunct
 
     try {
         const updatedTodo: TodoResponseDTO = await TodoService.updateTodo(
-            Number(id),
+            id,
             userId,
             { label, checked }
         );

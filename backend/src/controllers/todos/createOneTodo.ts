@@ -5,7 +5,7 @@ import { createTodoSchema } from '../../schemas/todoSchema';
 import { ApiError } from '../../errors/ApiError';
 
 export const createOneTodo = async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.userId;
+    const userId = req.userId!;
     const parsed = createTodoSchema.safeParse(req.body);
 
     if (!parsed.success) {
@@ -17,7 +17,7 @@ export const createOneTodo = async (req: Request, res: Response, next: NextFunct
     const { label }: CreateTodoDTO = parsed.data;
 
     try {
-        const newTodo:TodoResponseDTO = await TodoService.addTodo({ label }, userId!);
+        const newTodo:TodoResponseDTO = await TodoService.addTodo({ label }, userId);
         res.status(201).json(newTodo);
     } catch (error) {
         next(error);

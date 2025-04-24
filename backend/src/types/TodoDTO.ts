@@ -8,7 +8,7 @@ export interface UpdateTodoDTO {
 }
 
 export interface TodoResponseDTO {
-    id: number;
+    id: string;
     label: string;
     checked: boolean;
     timestamp: number;
@@ -16,7 +16,7 @@ export interface TodoResponseDTO {
 
 export interface TodoListResponseDTO {
     todos: TodoResponseDTO[];
-    userId: number;
+    userId: string;
     total?: number;
     page?: number;
     limit?: number;
