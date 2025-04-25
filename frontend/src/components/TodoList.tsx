@@ -4,9 +4,9 @@ import '../styles/todo-list.css';
 
 type TodoListProps = {
     todoItems: TodoItemType[];
-    onToggleCheck: (id: number) => void;
-    onEdit: (id: number, newLabel: string) => void;
-    onDelete: (id: number) => void
+    onToggleCheck: (id: string) => void;
+    onEdit: (id: string, newLabel: string) => void;
+    onDelete: (id: string) => void
 };
 
 export const TodoList = ({todoItems, onToggleCheck, onEdit, onDelete}: TodoListProps) => {

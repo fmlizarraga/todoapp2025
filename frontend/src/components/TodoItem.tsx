@@ -6,9 +6,9 @@ import { FaCircleXmark, FaTrashCan } from 'react-icons/fa6';
 
 type TodoItemProps = {
     todoItem: TodoItemType;
-    onToggleCheck: (id: number) => void;
-    onEdit: (id: number, newLabel: string) => void;
-    onDelete: (id: number) => void;
+    onToggleCheck: (id: string) => void;
+    onEdit: (id: string, newLabel: string) => void;
+    onDelete: (id: string) => void;
 };
 
 export const TodoItem = ({todoItem, onToggleCheck, onEdit, onDelete}: TodoItemProps) => {

@@ -29,7 +29,10 @@ class TodoService {
     }
 
     findByUuid(uuid: string): Promise<Todo | null> {
-        return this.todoRepository.findOneBy({ uuid });
+        return this.todoRepository.findOne({
+            where: { uuid },
+            relations: { user: true },
+        });
     }
 
     private toTodoDTO(todo: Todo): TodoResponseDTO {

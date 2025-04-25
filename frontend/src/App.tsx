@@ -1,29 +1,43 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Footer, Header, TodoList, Modal, NewTodoForm, AuthForm } from './components';
 import { useAuth, useTodoList } from './hooks';
 import './App.css';
 
 const App = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    
     const {
         isAuthenticated,
         isRegistering,
         login,
         register,
         logout,
+        checkAuth,
         toggleForm
     } = useAuth();
-
+    
     const {
         todoList,
         addTodo,
         toggleCheck,
         editTodo,
         deleteTodo,
-        resetList
+        resetList,
+        getTodoList
     } = useTodoList();
-
+    
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            checkAuth();
+        }}, []);
+    
+    useEffect(() => {
+        if (isAuthenticated) {
+            getTodoList();
+        }
+    }, [isAuthenticated]);
+    
     const handleLogout = () => {
         logout();
         resetList();
@@ -41,7 +55,6 @@ const App = () => {
             </div>
         );
     }
-
     return (
         <>
             <header>

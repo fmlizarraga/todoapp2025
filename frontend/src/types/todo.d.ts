@@ -1,5 +1,5 @@
 export interface TodoItemType {
-    id: number;
+    id: string;
     label: string;
     checked: boolean;
     timestamp: number;
