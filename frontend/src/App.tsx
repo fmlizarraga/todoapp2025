@@ -23,20 +23,20 @@ const App = () => {
         editTodo,
         deleteTodo,
         resetList,
-        getTodoList
+        page,
+        setPage,    
+        limit,
+        total,
     } = useTodoList();
+
+    const handlePreviousPage = () => setPage(p => p - 1);
+    const handleNextPage = () => setPage(p => p + 1);
     
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (token) {
             checkAuth();
         }}, []);
-    
-    useEffect(() => {
-        if (isAuthenticated) {
-            getTodoList();
-        }
-    }, [isAuthenticated]);
     
     const handleLogout = () => {
         logout();
@@ -47,10 +47,10 @@ const App = () => {
         return (
             <div className="auth-container">
                 <AuthForm
-                isRegistering={isRegistering}
-                onLogin={login}
-                onRegister={register}
-                onToggleForm={toggleForm}
+                    isRegistering={isRegistering}
+                    onLogin={login}
+                    onRegister={register}
+                    onToggleForm={toggleForm}
                 />
             </div>
         );
@@ -59,25 +59,30 @@ const App = () => {
         <>
             <header>
                 <Header 
-                onAdd={() => setIsModalOpen(true)}
-                onLogout={handleLogout}
+                    onAdd={() => setIsModalOpen(true)}
+                    onLogout={handleLogout}
                 />
             </header>
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <NewTodoForm 
-                onAdd={(label) => {
-                    addTodo(label);
-                    setIsModalOpen(false);
-                }}
-                onCancel={() => setIsModalOpen(false)} 
+                    onAdd={(label) => {
+                        addTodo(label);
+                        setIsModalOpen(false);
+                    }}
+                    onCancel={() => setIsModalOpen(false)} 
                 />
             </Modal>
             <main>
                 <TodoList 
-                todoItems={todoList} 
-                onToggleCheck={toggleCheck} 
-                onEdit={editTodo}
-                onDelete={deleteTodo}
+                    todoItems={todoList} 
+                    onToggleCheck={toggleCheck} 
+                    onEdit={editTodo}
+                    onDelete={deleteTodo}
+                    onNextPage={handleNextPage}
+                    onPreviousPage={handlePreviousPage}
+                    page={page}
+                    limit={limit}
+                    total={total}
                 />
             </main>
             <footer>

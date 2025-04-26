@@ -1,8 +1,8 @@
 import { CreateTodoDTO, TodoItemResponseDTO, TodoListResponseDTO, UpdateTodoDTO } from "../types/api";
 import api from "./api";
 
-export const getManyTodos = async (): Promise<TodoListResponseDTO> => {
-    const { data } = await api.get("/todos");
+export const getManyTodos = async (page: number = 1, limit: number = 10): Promise<TodoListResponseDTO> => {
+    const { data } = await api.get(`/todos?page=${page}&limit=${limit}`);
     return data;
 };
 

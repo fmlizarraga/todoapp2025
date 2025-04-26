@@ -1,5 +1,10 @@
-import { useState } from 'react';
-import { addTodo as APIaddTodo, updateTodo as APIupdateTodo, deleteTodo as APIdeleteTodo, getManyTodos } from '../api/todos';
+import { useEffect, useState } from 'react';
+import {
+    addTodo as APIaddTodo,
+    updateTodo as APIupdateTodo,
+    deleteTodo as APIdeleteTodo,
+    getManyTodos as APIgetTodos
+} from '../api/todos';
 import { useAuth } from './'
 import { TodoItemType } from '../types/todo';
 
@@ -7,11 +12,18 @@ export const useTodoList = () => {
     const [todoList, setTodoList] = useState<TodoItemType[]>([]);
     const { setError } = useAuth();
 
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [total, setTotal] = useState(0);
+
     const addTodo = async (label: string) => {
-            if (label.trim() === '') return;
+        if (label.trim() === '') return;
         try {
-            const newTodo: TodoItemType = await APIaddTodo({ label });
-            setTodoList([...todoList, newTodo]);
+            // TODO combine these calls at backend
+            await APIaddTodo({ label });
+            const data = await APIgetTodos(page, limit);
+            setTodoList(data.todos);
+            setTotal(data.total ?? 0);
             setError(null);
         } catch (err) {
             setError("Error adding todo");
@@ -49,18 +61,25 @@ export const useTodoList = () => {
         }
     };
 
-    const getTodoList = async () => {
+    const getTodos = async () => {
         try {
-            const todos = await getManyTodos();
-            setTodoList(todos.todos);
-            setError(null);
+            const data = await APIgetTodos(page, limit);
+            setTodoList(data.todos);
+            setTotal(data.total ?? 0);
+    
+            if (data.page !== undefined) setPage(data.page);
+            if (data.limit !== undefined) setLimit(data.limit);
         } catch (err) {
-            setError("Error getting todo list");
+            setError("Error getting todos");
             console.error(err);
         }
     };
 
     const resetList = () => setTodoList([]);
+
+    useEffect(() => {
+        getTodos();
+    }, [page, limit]);
 
     return {
         todoList,
@@ -69,6 +88,12 @@ export const useTodoList = () => {
         editTodo,
         deleteTodo,
         resetList,
-        getTodoList
+        page,
+        setPage,        
+        limit,
+        setLimit,
+        total,
+        setTotal,
+        setTodoList,
     };
 };

@@ -10,6 +10,11 @@ const app = express();
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+    console.log(`[Request] ${req.method} ${req.url}`);
+    next();
+});
+
 router.forEach(({path, route}) => {
     app.use(path, route);
 });
