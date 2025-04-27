@@ -12,8 +12,8 @@ export const getManyTodos = async (req: Request, res: Response, next: NextFuncti
     }
 
     const userId = req.userId!;
-    const page = parsedQuery.data.page || 1;
-    const limit = parsedQuery.data.limit || 10;
+    const page = parsedQuery.data.page;
+    const limit = parsedQuery.data.limit;
     const offset = (page - 1) * limit;
 
     try {

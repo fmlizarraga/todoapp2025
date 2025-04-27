@@ -11,6 +11,11 @@ export const addTodo = async ({label}: CreateTodoDTO): Promise<TodoItemResponseD
     return data;
 };
 
+export const enrichedAddTodo = async ({label}: CreateTodoDTO, page: number = 1, limit: number = 10): Promise<TodoListResponseDTO> => {
+    const { data } = await api.post(`/todos?fetch=true&page=${page}&limit=${limit}`, { label });
+    return data;
+}
+
 export const updateTodo = async (id: string, {label, checked}: UpdateTodoDTO): Promise<TodoItemResponseDTO> => {
     const { data } = await api.put(`/todos/${id}`, { label, checked });
     return data;

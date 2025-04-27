@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-    addTodo as APIaddTodo,
+    enrichedAddTodo as APIaddTodo,
     updateTodo as APIupdateTodo,
     deleteTodo as APIdeleteTodo,
     getManyTodos as APIgetTodos
@@ -19,9 +19,7 @@ export const useTodoList = () => {
     const addTodo = async (label: string) => {
         if (label.trim() === '') return;
         try {
-            // TODO combine these calls at backend
-            await APIaddTodo({ label });
-            const data = await APIgetTodos(page, limit);
+            const data = await APIaddTodo({ label });
             setTodoList(data.todos);
             setTotal(data.total ?? 0);
             setError(null);

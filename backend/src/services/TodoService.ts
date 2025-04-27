@@ -6,8 +6,23 @@ import UserService from "./UserService";
 
 class TodoService {
     private todoRepository = AppDataSource.getRepository(Todo);
+    
+    private toTodoDTO(todo: Todo): TodoResponseDTO {
+        return {
+            id: todo.uuid,
+            label: todo.label,
+            checked: todo.checked,
+            timestamp: todo.timestamp.getTime(),
+        };
+    }
 
-    async createTodo(userId: string, label: string): Promise<Todo> {
+    private enforceOwnership(todo: Todo, userId: string): void {
+        if (todo.user.uuid !== userId) {
+            throw new ApiError(403, 'You are not authorized to access this resource');
+        }
+    }
+
+    async createTodoEntity(userId: string, label: string): Promise<Todo> {
         const todo = new Todo();
         const user = await UserService.findByUuid(userId);
 
@@ -35,17 +50,8 @@ class TodoService {
         });
     }
 
-    private toTodoDTO(todo: Todo): TodoResponseDTO {
-        return {
-            id: todo.uuid,
-            label: todo.label,
-            checked: todo.checked,
-            timestamp: todo.timestamp.getTime(),
-        };
-    }
-
     async addTodo(data: CreateTodoDTO, userId: string): Promise<TodoResponseDTO> {
-        const todo = await this.createTodo(userId, data.label);
+        const todo = await this.createTodoEntity(userId, data.label);
 
         return this.toTodoDTO(todo);
     }
@@ -57,11 +63,9 @@ class TodoService {
             throw new ApiError(404, 'Todo not found');
         }
 
-        if (todo.user.uuid !== userId) {
-            throw new ApiError(403, 'You are not authorized to modify this resource');
-        }
+        this.enforceOwnership(todo, userId);
 
-        todo.label = data.label || todo.label;
+        todo.label = data.label ?? todo.label;
         if (typeof data.checked === 'boolean') todo.checked = data.checked;
         await this.todoRepository.save(todo);
 
@@ -74,23 +78,22 @@ class TodoService {
         if (!todo) {
             throw new ApiError(404, 'Todo not found');
         }
-        if (todo.user.uuid !== userId) {
-            throw new ApiError(403, 'You are not authorized to modify this resource');
-        }
+
+        this.enforceOwnership(todo, userId);
 
         await this.todoRepository.remove(todo);
     }
 
     async getOneTodo(id: string, userId: string): Promise<TodoResponseDTO> {
-        return this.findByUuid(id).then((todo) => {
-            if (!todo) {
-                throw new ApiError(404, 'Todo not found');
-            }
-            if (todo.user.uuid !== userId) {
-                throw new ApiError(403, 'You are not authorized to access this resource');
-            }
-            return this.toTodoDTO(todo);
-        });
+        const todo = await this.findByUuid(id);
+
+        if (!todo) {
+            throw new ApiError(404, 'Todo not found');
+        }
+
+        this.enforceOwnership(todo, userId);
+
+        return this.toTodoDTO(todo);
     }
 
     async findPaginatedByUserId(userId: string, limit: number, offset: number): Promise<TodoListResponseDTO> {
@@ -108,6 +111,16 @@ class TodoService {
             page: Math.floor(offset / limit) + 1,
             limit,
         };
+    }
+
+    async addAndFetchTodo(
+        data: CreateTodoDTO,
+        userId: string,
+        limit: number,
+        offset: number
+    ): Promise<TodoListResponseDTO> {
+        await this.createTodoEntity(userId, data.label);
+        return this.findPaginatedByUserId(userId, limit, offset);
     }
 }
 
