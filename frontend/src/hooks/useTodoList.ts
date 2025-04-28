@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
     enrichedAddTodo as APIaddTodo,
     updateTodo as APIupdateTodo,
@@ -59,6 +59,8 @@ export const useTodoList = () => {
         }
     };
 
+    const resetList = () => setTodoList([]);
+
     const getTodos = async () => {
         try {
             const data = await APIgetTodos(page, limit);
@@ -72,12 +74,6 @@ export const useTodoList = () => {
             console.error(err);
         }
     };
-
-    const resetList = () => setTodoList([]);
-
-    useEffect(() => {
-        getTodos();
-    }, [page, limit]);
 
     return {
         todoList,
@@ -93,5 +89,6 @@ export const useTodoList = () => {
         total,
         setTotal,
         setTodoList,
+        getTodos
     };
 };

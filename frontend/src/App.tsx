@@ -27,6 +27,7 @@ const App = () => {
         setPage,    
         limit,
         total,
+        getTodos
     } = useTodoList();
 
     const handlePreviousPage = () => setPage(p => p - 1);
@@ -36,7 +37,14 @@ const App = () => {
         const token = localStorage.getItem("token");
         if (token) {
             checkAuth();
-        }}, []);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            getTodos();
+        }
+    }, [isAuthenticated, page, limit]);
     
     const handleLogout = () => {
         logout();
